@@ -10,67 +10,133 @@
   h1 { font-size: 22px; font-weight: 500; margin-bottom: 2rem; }
   h3 { font-size: 16px; font-weight: 500; margin-bottom: 1rem; }
   .section { margin-bottom: 2rem; }
-  .input-row { display: flex; gap: 8px; margin-bottom: 1rem; }
-  .input-row input { flex: 1; padding: 8px 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; background: #fff; }
-  .input-row input:focus { outline: none; border-color: #888; }
-  .add-btn { padding: 8px 18px; background: #fff; border: 1px solid #ccc; border-radius: 8px; cursor: pointer; font-size: 14px; }
-  .add-btn:hover { background: #f0f0f0; }
+  input, select { padding: 8px 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; background: #fff; }
+  input:focus, select:focus { outline: none; border-color: #888; }
+  .btn { padding: 8px 18px; background: #fff; border: 1px solid #ccc; border-radius: 8px; cursor: pointer; font-size: 14px; }
+  .btn:hover { background: #f0f0f0; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-full { width: 100%; padding: 12px; font-size: 15px; font-weight: 500; }
+  .input-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .input-row input { flex: 1; }
+  .ing-row { display: flex; gap-6px; gap: 6px; margin-bottom: 6px; }
+  .ing-row input:first-child { flex: 2; }
+  .ing-row input:nth-child(2) { flex: 1; width: 70px; }
+  .ing-row input:nth-child(3) { flex: 1; width: 80px; }
+  .ing-row .del-btn { background: none; border: none; cursor: pointer; color: #aaa; font-size: 16px; padding: 0 4px; }
+  .ing-row .del-btn:hover { color: #e55; }
+  .ing-section { background: #fafaf7; border: 1px solid #e5e5e5; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+  .ing-label { font-size: 12px; color: #888; margin-bottom: 8px; display: flex; gap: 6px; }
+  .ing-label span:first-child { flex: 2; }
+  .ing-label span:nth-child(2) { flex: 1; }
+  .ing-label span:nth-child(3) { flex: 1; }
   .dishes-list { display: flex; flex-direction: column; gap: 6px; }
-  .dish-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; font-size: 14px; }
+  .dish-item { background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden; }
+  .dish-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; cursor: pointer; }
+  .dish-header:hover { background: #fafaf7; }
+  .dish-name { font-size: 14px; font-weight: 500; }
+  .dish-meta { font-size: 12px; color: #888; }
+  .dish-actions { display: flex; gap: 6px; align-items: center; }
   .del-btn { background: none; border: none; cursor: pointer; color: #aaa; font-size: 16px; }
   .del-btn:hover { color: #e55; }
+  .dish-ings { padding: 8px 12px 10px; border-top: 1px solid #f0f0f0; font-size: 13px; color: #555; }
+  .dish-ings span { display: inline-block; background: #f0f0f0; border-radius: 4px; padding: 2px 8px; margin: 2px 3px 2px 0; }
   .empty { font-size: 13px; color: #999; padding: 8px 0; }
-  .draw-btn { width: 100%; padding: 12px; background: #fff; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; }
-  .draw-btn:hover { background: #f0f0f0; }
-  .draw-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .hint { font-size: 12px; color: #999; margin-top: 6px; }
+  .status { font-size: 13px; color: #888; margin-bottom: 1rem; min-height: 20px; }
+  .status.error { color: #e55; }
+  .draw-controls { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .draw-controls label { font-size: 14px; color: #555; white-space: nowrap; }
+  .draw-controls input[type=number] { width: 60px; text-align: center; }
   .week-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-top: 1rem; }
   .day-card { background: #fff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 12px; }
   .day-label { font-size: 11px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
   .day-dish { font-size: 14px; line-height: 1.4; }
-  .count-badge { font-size: 12px; color: #888; font-weight: 400; margin-left: 6px; }
-  .status { font-size: 13px; color: #888; margin-bottom: 1rem; }
-  .status.error { color: #e55; }
+  .shopping-list { margin-top: 1.5rem; }
+  .shopping-list h3 { margin-bottom: 0.75rem; }
+  .shopping-item { display: flex; align-items: center; gap: 10px; padding: 7px 12px; background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; margin-bottom: 6px; font-size: 14px; }
+  .shopping-item input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; }
+  .shopping-item.checked span { text-decoration: line-through; color: #aaa; }
+  .add-ing-btn { font-size: 13px; color: #666; background: none; border: 1px dashed #ccc; border-radius: 6px; padding: 4px 10px; cursor: pointer; margin-top: 4px; }
+  .add-ing-btn:hover { background: #f0f0f0; }
+  .hint { font-size: 12px; color: #999; margin-top: 6px; }
 </style>
 </head>
 <body>
 
 <h1>Mahlzeiten-Wochenplaner</h1>
-
 <p class="status" id="status">Gerichte werden geladen...</p>
 
 <div class="section">
-  <h3>Meine Gerichte <span class="count-badge" id="count"></span></h3>
+  <h3>Gericht hinzufügen</h3>
   <div class="input-row">
     <input type="text" id="dishInput" placeholder="z.B. Spaghetti Bolognese" maxlength="60" />
-    <button class="add-btn" onclick="addDish()">Hinzufügen</button>
   </div>
+  <div class="ing-section">
+    <div class="ing-label">
+      <span>Zutat</span><span>Menge</span><span>Einheit</span><span style="width:24px"></span>
+    </div>
+    <div id="ingRows"></div>
+    <button class="add-ing-btn" onclick="addIngRow()">+ Zutat hinzufügen</button>
+  </div>
+  <button class="btn" onclick="addDish()">Gericht speichern</button>
+</div>
+
+<div class="section">
+  <h3>Meine Gerichte <span id="count" style="font-size:12px;color:#888;font-weight:400;"></span></h3>
   <div class="dishes-list" id="dishesList"></div>
 </div>
 
 <div class="section">
   <h3>Wochenplan</h3>
-  <button class="draw-btn" id="drawBtn" onclick="drawWeek()">7 Gerichte auslosen</button>
+  <div class="draw-controls">
+    <label>Anzahl Gerichte:</label>
+    <input type="number" id="drawCount" value="7" min="1" max="7" />
+    <button class="btn btn-full" id="drawBtn" onclick="drawWeek()">Gerichte auslosen</button>
+  </div>
   <p class="hint" id="drawHint"></p>
   <div class="week-grid" id="weekGrid"></div>
+  <div class="shopping-list" id="shoppingList"></div>
 </div>
 
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwMqZz_RpGJRIC9bwNN90bjvBTVPi8_aIPILo_ekjxyrSQLtY4L8AiArvAQvX7Xq-sTEw/exec';
-const SECRET = 'jasmin-wochenplaner-2024';
+const SECRET = 'wochenplaner';
 const DAYS = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
 
 let dishes = [];
+let ingredients = [];
+let ingRowCount = 0;
+
+function addIngRow(name='', amount='', unit='') {
+  const id = ingRowCount++;
+  const div = document.createElement('div');
+  div.className = 'ing-row';
+  div.id = `ing-${id}`;
+  div.innerHTML = `
+    <input type="text" placeholder="z.B. Hackfleisch" value="${name}" />
+    <input type="number" placeholder="500" value="${amount}" min="0" />
+    <input type="text" placeholder="g / ml / Stk" value="${unit}" maxlength="10" />
+    <button class="del-btn" onclick="document.getElementById('ing-${id}').remove()">&#x2715;</button>
+  `;
+  document.getElementById('ingRows').appendChild(div);
+}
+
+function getIngRows() {
+  return [...document.querySelectorAll('#ingRows .ing-row')].map(row => {
+    const inputs = row.querySelectorAll('input');
+    return { name: inputs[0].value.trim(), amount: parseFloat(inputs[1].value) || 0, unit: inputs[2].value.trim() };
+  }).filter(i => i.name);
+}
 
 async function loadDishes() {
   try {
     const res = await fetch(`${SCRIPT_URL}?action=get&token=${SECRET}`);
     const data = await res.json();
     dishes = data.dishes || [];
+    ingredients = data.ingredients || [];
     setStatus('');
     render();
   } catch(e) {
-    setStatus('Fehler beim Laden. Bitte Seite neu laden.', true);
+    setStatus('Fehler beim Laden.', true);
   }
 }
 
@@ -78,12 +144,15 @@ async function addDish() {
   const inp = document.getElementById('dishInput');
   const val = inp.value.trim();
   if (!val) return;
+  const ings = getIngRows();
   inp.value = '';
+  document.getElementById('ingRows').innerHTML = '';
+  ingRowCount = 0;
   setStatus('Wird gespeichert...');
   try {
     await fetch(SCRIPT_URL, {
       method: 'POST',
-      body: JSON.stringify({ action: 'add', dish: val, token: SECRET })
+      body: JSON.stringify({ action: 'add', dish: val, ingredients: ings, token: SECRET })
     });
     await loadDishes();
   } catch(e) {
@@ -92,6 +161,7 @@ async function addDish() {
 }
 
 async function del(i) {
+  if (!confirm(`"${dishes[i]}" wirklich löschen?`)) return;
   setStatus('Wird gelöscht...');
   try {
     await fetch(SCRIPT_URL, {
@@ -104,31 +174,75 @@ async function del(i) {
   }
 }
 
-function drawWeek() {
-  const pool = [...dishes];
-  const picked = [];
-  while (picked.length < 7) {
-    const i = Math.floor(Math.random() * pool.length);
-    picked.push(pool.splice(i, 1)[0]);
-  }
-  document.getElementById('weekGrid').innerHTML = DAYS.map((d, i) =>
-    `<div class="day-card"><div class="day-label">${d}</div><div class="day-dish">${picked[i]}</div></div>`
-  ).join('');
+function toggleIngs(i) {
+  const el = document.getElementById(`ings-${i}`);
+  if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
 function render() {
-  const list = document.getElementById('dishesList');
   const count = document.getElementById('count');
   const btn = document.getElementById('drawBtn');
   const hint = document.getElementById('drawHint');
+  const drawCount = parseInt(document.getElementById('drawCount').value) || 7;
   count.textContent = dishes.length > 0 ? `(${dishes.length})` : '';
-  list.innerHTML = dishes.length === 0
-    ? '<p class="empty">Noch keine Gerichte eingetragen.</p>'
-    : dishes.map((d, i) =>
-        `<div class="dish-item"><span>${d}</span><button class="del-btn" onclick="del(${i})">&#x2715;</button></div>`
-      ).join('');
-  btn.disabled = dishes.length < 7;
-  hint.textContent = dishes.length < 7 ? `Noch ${7 - dishes.length} Gericht${7 - dishes.length === 1 ? '' : 'e'} nötig.` : '';
+  const list = document.getElementById('dishesList');
+  if (dishes.length === 0) {
+    list.innerHTML = '<p class="empty">Noch keine Gerichte eingetragen.</p>';
+  } else {
+    list.innerHTML = dishes.map((d, i) => {
+      const ings = ingredients.filter(ing => ing.dish === d);
+      const ingHtml = ings.length > 0
+        ? ings.map(ing => `<span>${ing.name}${ing.amount ? ' ' + ing.amount : ''}${ing.unit ? ' ' + ing.unit : ''}</span>`).join('')
+        : '<span style="color:#aaa">Keine Zutaten eingetragen</span>';
+      return `<div class="dish-item">
+        <div class="dish-header" onclick="toggleIngs(${i})">
+          <div><div class="dish-name">${d}</div><div class="dish-meta">${ings.length} Zutat${ings.length !== 1 ? 'en' : ''}</div></div>
+          <div class="dish-actions"><button class="del-btn" onclick="event.stopPropagation();del(${i})">&#x2715;</button></div>
+        </div>
+        <div class="dish-ings" id="ings-${i}" style="display:none">${ingHtml}</div>
+      </div>`;
+    }).join('');
+  }
+  btn.disabled = dishes.length < drawCount;
+  hint.textContent = dishes.length < drawCount ? `Noch ${drawCount - dishes.length} Gericht${drawCount - dishes.length === 1 ? '' : 'e'} nötig.` : '';
+}
+
+function drawWeek() {
+  const drawCount = Math.min(parseInt(document.getElementById('drawCount').value) || 7, dishes.length);
+  const pool = [...dishes];
+  const picked = [];
+  while (picked.length < drawCount) {
+    const i = Math.floor(Math.random() * pool.length);
+    picked.push(pool.splice(i, 1)[0]);
+  }
+  document.getElementById('weekGrid').innerHTML = DAYS.slice(0, drawCount).map((d, i) =>
+    `<div class="day-card"><div class="day-label">${d}</div><div class="day-dish">${picked[i]}</div></div>`
+  ).join('');
+  buildShoppingList(picked);
+}
+
+function buildShoppingList(picked) {
+  const combined = {};
+  picked.forEach(dish => {
+    ingredients.filter(ing => ing.dish === dish).forEach(ing => {
+      const key = `${ing.name}__${ing.unit}`;
+      if (combined[key]) combined[key].amount += parseFloat(ing.amount) || 0;
+      else combined[key] = { name: ing.name, amount: parseFloat(ing.amount) || 0, unit: ing.unit };
+    });
+  });
+  const items = Object.values(combined);
+  if (items.length === 0) { document.getElementById('shoppingList').innerHTML = ''; return; }
+  document.getElementById('shoppingList').innerHTML = `
+    <h3>Einkaufsliste</h3>
+    ${items.map((item, i) => `
+      <div class="shopping-item" id="si-${i}">
+        <input type="checkbox" onchange="toggleCheck(${i})" />
+        <span>${item.name}${item.amount ? ' – ' + item.amount : ''}${item.unit ? ' ' + item.unit : ''}</span>
+      </div>`).join('')}`;
+}
+
+function toggleCheck(i) {
+  document.getElementById(`si-${i}`).classList.toggle('checked');
 }
 
 function setStatus(msg, err) {
@@ -138,6 +252,7 @@ function setStatus(msg, err) {
 }
 
 document.getElementById('dishInput').addEventListener('keydown', e => { if (e.key === 'Enter') addDish(); });
+document.getElementById('drawCount').addEventListener('change', render);
 loadDishes();
 </script>
 </body>
