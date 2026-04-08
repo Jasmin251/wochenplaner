@@ -129,7 +129,7 @@ function getIngRows() {
 
 async function loadDishes() {
   try {
-    const res = await fetch(`${SCRIPT_URL}?action=get&token=${SECRET}`);
+    const res = await fetch(`${SCRIPT_URL}?action=get&token=${SECRET}`, { redirect: 'follow' });
     const data = await res.json();
     dishes = data.dishes || [];
     ingredients = data.ingredients || [];
@@ -152,6 +152,7 @@ async function addDish() {
   try {
     await fetch(SCRIPT_URL, {
       method: 'POST',
+      mode: 'no-cors',
       body: JSON.stringify({ action: 'add', dish: val, ingredients: ings, token: SECRET })
     });
     await loadDishes();
@@ -166,6 +167,7 @@ async function del(i) {
   try {
     await fetch(SCRIPT_URL, {
       method: 'POST',
+      mode: 'no-cors',
       body: JSON.stringify({ action: 'delete', row: i, token: SECRET })
     });
     await loadDishes();
