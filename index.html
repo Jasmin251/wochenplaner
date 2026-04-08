@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mahlzeiten-Wochenplaner</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f5f5f0; color: #1a1a1a; padding: 1.5rem 1rem; max-width: 700px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 500; margin-bottom: 2rem; }
+  h3 { font-size: 16px; font-weight: 500; margin-bottom: 1rem; }
+  .section { margin-bottom: 2rem; }
+  .input-row { display: flex; gap: 8px; margin-bottom: 1rem; }
+  .input-row input { flex: 1; padding: 8px 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; background: #fff; }
+  .input-row input:focus { outline: none; border-color: #888; }
+  .add-btn { padding: 8px 18px; background: #fff; border: 1px solid #ccc; border-radius: 8px; cursor: pointer; font-size: 14px; }
+  .add-btn:hover { background: #f0f0f0; }
+  .dishes-list { display: flex; flex-direction: column; gap: 6px; }
+  .dish-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; font-size: 14px; }
+  .del-btn { background: none; border: none; cursor: pointer; color: #aaa; font-size: 16px; }
+  .del-btn:hover { color: #e55; }
+  .empty { font-size: 13px; color: #999; padding: 8px 0; }
+  .draw-btn { width: 100%; padding: 12px; background: #fff; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; }
+  .draw-btn:hover { background: #f0f0f0; }
+  .draw-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .hint { font-size: 12px; color: #999; margin-top: 6px; }
+  .week-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-top: 1rem; }
+  .day-card { background: #fff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 12px; }
+  .day-label { font-size: 11px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+  .day-dish { font-size: 14px; line-height: 1.4; }
+  .count-badge { font-size: 12px; color: #888; font-weight: 400; margin-left: 6px; }
+  .status { font-size: 13px; color: #888; margin-bottom: 1rem; }
+  .status.error { color: #e55; }
+</style>
+</head>
+<body>
+
+<h1>Mahlzeiten-Wochenplaner</h1>
+
+<p class="status" id="status">Gerichte werden geladen...</p>
+
+<div class="section">
+  <h3>Meine Gerichte <span class="count-badge" id="count"></span></h3>
+  <div class="input-row">
+    <input type="text" id="dishInput" placeholder="z.B. Spaghetti Bolognese" maxlength="60" />
+    <button class="add-btn" onclick="addDish()">Hinzufügen</button>
+  </div>
+  <div class="dishes-list" id="dishesList"></div>
+</div>
+
+<div class="section">
+  <h3>Wochenplan</h3>
+  <button class="draw-btn" id="drawBtn" onclick="drawWeek()">7 Gerichte auslosen</button>
+  <p class="hint" id="drawHint"></p>
+  <div class="week-grid" id="weekGrid"></div>
+</div>
+
+<script>
+const API_KEY = 'AIzaSyBeGNgy1Umxt6PR073ZB_292uP-CgWQiFU';
+const SHEET_ID = '1IijkwxEesgVntYZTXFcSJ12L9RgtHkzWwDTPqgyFCig';
+const BASE = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}`;
+const DAYS = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+
+let dishes = [];
+
+async function loadDishes() {
+  try {
+    const res = await fetch(`${BASE}/values/A2:A1000?key=${API_KEY}`);
+    const data = await res.json();
+    dishes = (data.values || []).map(r => r[0]).filter(Boolean);
+    setStatus('');
+    render();
+  } catch(e) {
+    setStatus('Fehler beim Laden. Bitte Seite neu laden.', true);
+  }
+}
+
+async function addDish() {
+  const inp = document.getElementById('dishInput');
+  const val = inp.value.trim();
+  if (!val) return;
+  inp.value = '';
+  try {
+    await fetch(`${BASE}/values/A1:A1000:append?valueInputOption=RAW&key=${API_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ values: [[val]] })
+    });
+    await loadDishes();
+  } catch(e) {
+    setStatus('Fehler beim Speichern.', true);
+  }
+}
+
+async function del(i) {
+  // Zeile löschen via batchUpdate
+  try {
+    const metaRes = await fetch(`${BASE}?key=${API_KEY}`);
+    const meta = await metaRes.json();
+    const sheetId = meta.sheets[0].properties.sheetId;
+    await fetch(`${BASE}:batchUpdate?key=${API_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        requests: [{
+          deleteDimension: {
+            range: { sheetId, dimension: 'ROWS', startIndex: i + 1, endIndex: i + 2 }
+          }
+        }]
+      })
+    });
+    await loadDishes();
+  } catch(e) {
+    setStatus('Fehler beim Löschen.', true);
+  }
+}
+
+function drawWeek() {
+  const pool = [...dishes];
+  const picked = [];
+  while (picked.length < 7) {
+    const i = Math.floor(Math.random() * pool.length);
+    picked.push(pool.splice(i, 1)[0]);
+  }
+  document.getElementById('weekGrid').innerHTML = DAYS.map((d, i) =>
+    `<div class="day-card"><div class="day-label">${d}</div><div class="day-dish">${picked[i]}</div></div>`
+  ).join('');
+}
+
+function render() {
+  const list = document.getElementById('dishesList');
+  const count = document.getElementById('count');
+  const btn = document.getElementById('drawBtn');
+  const hint = document.getElementById('drawHint');
+  count.textContent = dishes.length > 0 ? `(${dishes.length})` : '';
+  list.innerHTML = dishes.length === 0
+    ? '<p class="empty">Noch keine Gerichte eingetragen.</p>'
+    : dishes.map((d, i) =>
+        `<div class="dish-item"><span>${d}</span><button class="del-btn" onclick="del(${i})">&#x2715;</button></div>`
+      ).join('');
+  btn.disabled = dishes.length < 7;
+  hint.textContent = dishes.length < 7 ? `Noch ${7 - dishes.length} Gericht${7 - dishes.length === 1 ? '' : 'e'} nötig.` : '';
+}
+
+function setStatus(msg, err) {
+  const s = document.getElementById('status');
+  s.textContent = msg;
+  s.className = 'status' + (err ? ' error' : '');
+}
+
+document.getElementById('dishInput').addEventListener('keydown', e => { if (e.key === 'Enter') addDish(); });
+loadDishes();
+</script>
+</body>
+</html>
