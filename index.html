@@ -150,11 +150,8 @@ async function addDish() {
   ingRowCount = 0;
   setStatus('Wird gespeichert...');
   try {
-    await fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      body: JSON.stringify({ action: 'add', dish: val, ingredients: ings, token: SECRET })
-    });
+    const url = `${SCRIPT_URL}?action=add&token=${SECRET}&dish=${encodeURIComponent(val)}&ingredients=${encodeURIComponent(JSON.stringify(ings))}`;
+    await fetch(url, { redirect: 'follow' });
     await loadDishes();
   } catch(e) {
     setStatus('Fehler beim Speichern.', true);
@@ -165,11 +162,8 @@ async function del(i) {
   if (!confirm(`"${dishes[i]}" wirklich löschen?`)) return;
   setStatus('Wird gelöscht...');
   try {
-    await fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      body: JSON.stringify({ action: 'delete', row: i, token: SECRET })
-    });
+    const url = `${SCRIPT_URL}?action=delete&token=${SECRET}&row=${i}`;
+    await fetch(url, { redirect: 'follow' });
     await loadDishes();
   } catch(e) {
     setStatus('Fehler beim Löschen.', true);
